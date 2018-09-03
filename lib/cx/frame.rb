@@ -1,9 +1,9 @@
 class Frame
-  attr_reader :message_type, :sequence_number, :function_name, :payload
+  attr_reader :MessageType, :SequenceNumber, :FunctionName, :Payload
   def initialize(m, i, n, o)
-    @message_type = m
-    @sequence_number = i
-    @function_name = n
-    @payload = o
+    @MessageType = m
+    @SequenceNumber = i
+    @FunctionName = n
+    @Payload = o
   end
 end
