@@ -1,10 +1,14 @@
 class Frame
+<<<<<<< HEAD
   attr_accessor :message_type, :sequence_number, :function_name, :payload
+=======
+  attr_reader :MessageType, :SequenceNumber, :FunctionName, :Payload
+>>>>>>> e269064753cceb70b558adfc96e2e822342c114d
   def initialize(m, i, n, o)
-    @message_type = m
-    @sequence_number = i
-    @function_name = n
-    @payload = o
+    @MessageType = m
+    @SequenceNumber = i
+    @FunctionName = n
+    @Payload = o
   end
 
   def self.serialize(frame)
