@@ -7,12 +7,8 @@ require_relative "cx/product.rb"
 
 class CX
   attr_reader :is_connected, :is_authenticated
-  def self.production
-    "wss://api-cx.coins.asia/ws-api/"
-  end
-  def self.staging
-    "wss://api-cx.staging.coins.technology/ws-api/"
-  end
+  def self.production; "wss://api-cx.coins.asia/ws-api/" end
+  def self.staging; "wss://api-cx.staging.coins.technology/ws-api/" end
 
   def initialize(url)
     connect_to_api(url)
