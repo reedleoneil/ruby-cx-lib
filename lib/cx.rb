@@ -16,200 +16,151 @@ class CX
   end
 
   def get_products(sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "GetProducts"
-    frame.payload = { "OMSId" => 1 }
+    payload = { "OMSId" => 1 }
+    frame = Frame.new(MessageType.request, sequence_number, "GetProducts", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def get_instruments(sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "GetInstruments"
-    frame.payload = { "OMSId" => 1 }
+    payload = { "OMSId" => 1 }
+    frame = Frame.new(MessageType.request, sequence_number, "GetInstruments", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def web_authenticate_user(username, password, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "WebAuthenticateUser"
-    frame.payload = { "UserName" => username, "Password" => password }
+    payload = { "UserName" => username, "Password" => password }
+    frame = Frame.new(MessageType.request, sequence_number, "WebAuthenticateUser", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def get_user_accounts(sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "GetUserAccounts"
-    frame.payload = { }
-    @ws.send(Frame.serialize(frame))
-  end
-
-  def get_user_accounts(sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "GetUserAccounts"
-    frame.payload = { }
+    frame = Frame.new(MessageType.request, sequence_number, "GetUserAccounts", {})
     @ws.send(Frame.serialize(frame))
   end
 
   def get_account_transactions(account_id, depth, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "GetAccountTransactions"
-    frame.payload = { "OMSId" => 1, "AccountId" => account_id, "Depth" => depth }
+    payload = { "OMSId" => 1, "AccountId" => account_id, "Depth" => depth }
+    frame = frame = Frame.new(MessageType.request, sequence_number, "GetAccountTransactions", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def get_account_positions(account_id, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "GetAccountPositions"
-    frame.payload = { "OMSId" => 1, "AccountId" => account_id }
+    payload = { "OMSId" => 1, "AccountId" => account_id }
+    frame = Frame.new(MessageType.request, sequence_number, "GetAccountPositions", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def get_account_trades(account_id, count, start_index, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "GetAccountTrades"
-    frame.payload = { "OMSId" => 1, "AccountId" => account_id, "Count" => count, "StartIndex" => start_index }
+    payload = { "OMSId" => 1, "AccountId" => account_id, "Count" => count, "StartIndex" => start_index }
+    frame = Frame.new(MessageType.request, sequence_number, "GetAccountTrades", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def send_order(account_id, client_order_id, quantity, display_quantity, user_display_quantity, limit_price, order_id_oco, order_type, peg_price_type, instrument_id, trailing_amount, limit_offest, side, stop_price, time_in_force, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "SendOrder"
-    frame.payload = { "OMSId" => 1, "AccountId" => account_id, "ClientOrderId" => client_order_id, "Quantity" => quantity, "DisplayQuantity" => display_quantity, "UseDisplayQuantity" => use_display_quantity, "LimitPrice" => limit_price, "OrderIdOCO" => order_id_oco, "OrderType" => order_type, "PegPriceType" => peg_price_type, "InstrumentId" => instrument_id, "LimitOffset" => limit_offset, "Side" => side, "StopPrice" => stop_price, "TimeInForce" => time_in_force }
+    payload = {
+      "OMSId" => 1,
+      "AccountId" => account_id,
+      "ClientOrderId" => client_order_id,
+      "Quantity" => quantity,
+      "DisplayQuantity" => display_quantity,
+      "UseDisplayQuantity" => use_display_quantity,
+      "LimitPrice" => limit_price,
+      "OrderIdOCO" => order_id_oco,
+      "OrderType" => order_type,
+      "PegPriceType" => peg_price_type,
+      "InstrumentId" => instrument_id,
+      "LimitOffset" => limit_offset,
+      "Side" => side,
+      "StopPrice" => stop_price,
+      "TimeInForce" => time_in_force
+    }
+    frame = Frame.new(MessageType.request, sequence_number, "SendOrder", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def cancel_order(account_id, order_id, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "CancelOrder"
-    frame.payload = { "OMSId" => 1, "AccountId" => account_id, "OrderId" => order_id }
+    payload = { "OMSId" => 1, "AccountId" => account_id, "OrderId" => order_id }
+    frame = Frame.new(MessageType.request, sequence_number, "CancelOrder", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def get_order_status(account_id, order_id, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "GetOrderStatus"
-    frame.payload = { "OMSId" => 1, "AccountId" => account_id, "OrderId" => order_id }
+    payload = { "OMSId" => 1, "AccountId" => account_id, "OrderId" => order_id }
+    frame = Frame.new(MessageType.request, sequence_number, "GetOrderStatus", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def get_order_fee(account_id, instrument_id, product_id, amount, order_type, maker_taker, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "GetOrderFee"
-    frame.payload = { "OMSId" => 1, "AccountId" => account_id, "InstrumentId" => instrument_id, "ProductId" => product_id, "Amount" => amount, "OrderType" => order_type, "MakerTaker" => maker_taker }
+    payload = {
+      "OMSId" => 1,
+      "AccountId" => account_id,
+      "InstrumentId" => instrument_id,
+      "ProductId" => product_id,
+      "Amount" => amount,
+      "OrderType" => order_type,
+      "MakerTaker" => maker_taker
+    }
+    frame = Frame.new(MessageType.request, sequence_number, "GetOrderFee", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def get_order_history(account_id, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "GetOrderHistory"
-    frame.payload = { "OMSId" => 1, "AccountId" => account_id }
+    payload = { "OMSId" => 1, "AccountId" => account_id }
+    frame = Frame.new(MessageType.request, sequence_number, "GetOrderHistory", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def get_open_orders(account_id, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "GetOpenOrders"
-    frame.payload = { "OMSId" => 1, "AccountId" => account_id }
+    payload = { "OMSId" => 1, "AccountId" => account_id }
+    frame = Frame.new(MessageType.request, sequence_number, "GetOpenOrders", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def create_withdraw_ticket(product_id, account_id, amount, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "CreateWithdrawTicket"
-    frame.payload = { "OMSId" => 1, "ProductId" => product_id, "AccountId" => account_id, "Amount" => amount }
+    payload = { "OMSId" => 1, "ProductId" => product_id, "AccountId" => account_id, "Amount" => amount }
+    frame = Frame.new(MessageType.request, sequence_number, "CreateWithdrawTicket", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def subscribe_level_1(instrument_id, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "SubscribeLevel1"
-    frame.payload = { "OMSId" => 1, "InstrumentId" => instrument_id }
+    payload = { "OMSId" => 1, "InstrumentId" => instrument_id }
+    frame = Frame.new(MessageType.request, sequence_number, "SubscribeLevel1", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def unsubscribe_level_1(instrument_id, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "UnsubscribeLevel1"
-    frame.payload = { "OMSId" => 1, "InstrumentId" => instrument_id }
+    payload = { "OMSId" => 1, "InstrumentId" => instrument_id }
+    frame = Frame.new(MessageType.request, sequence_number, "UnsubscribeLevel1", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def subscribe_level_2(instrument_id, depth, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "SubscribeLevel2"
-    frame.payload = { "OMSId" => 1, "InstrumentId" => instrument_id, "Depth" => depth }
+    payload = { "OMSId" => 1, "InstrumentId" => instrument_id, "Depth" => depth }
+    frame = Frame.new(MessageType.request, sequence_number, "SubscribeLevel2", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def unsubscribe_level_2(instrument_id, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "UnsubscribeLevel2"
-    frame.payload = { "OMSId" => 1, "InstrumentId" => instrument_id }
+    payload = { "OMSId" => 1, "InstrumentId" => instrument_id }
+    frame = Frame.new(MessageType.request, sequence_number, "UnsubscribeLevel2", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def subscribe_trades(instrument_id, include_last_count, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "SubscribeTrades"
-    frame.payload = { "OMSId" => 1, "InstrumentId" => instrument_id, "IncludeLastCount" => include_last_count }
+    payload = { "OMSId" => 1, "InstrumentId" => instrument_id, "IncludeLastCount" => include_last_count }
+    frame = Frame.new(MessageType.request, sequence_number, "SubscribeTrades", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def unsubscribe_trades(instrument_id, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "UnsubscribeTrades"
-    frame.payload = { "OMSId" => 1, "InstrumentId" => instrument_id }
+    payload = { "OMSId" => 1, "InstrumentId" => instrument_id }
+    frame = Frame.new(MessageType.request, sequence_number, "UnsubscribeTrades", payload)
     @ws.send(Frame.serialize(frame))
   end
 
   def subscribe_account_events(account_id, sequence_number = 0)
-    frame = Frame.new
-    frame.message_type = MessageType.request
-    frame.sequence_number = sequence_number
-    frame.function_name = "SubscribeAccountEvents"
-    frame.payload = { "OMSId" => 1, "AccountId" => account_id }
+    payload = { "OMSId" => 1, "AccountId" => account_id }
+    frame = Frame.new(MessageType.request, sequence_number, "SubscribeAccountEvents", payload)
     @ws.send(Frame.serialize(frame))
   end
 
