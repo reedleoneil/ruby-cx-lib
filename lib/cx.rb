@@ -1,5 +1,6 @@
 require "faye/websocket"
 require "json"
+require "ostruct"
 
 require_relative "cx/message_type.rb"
 require_relative "cx/frame.rb"
@@ -12,7 +13,18 @@ class CX
   def self.staging; "wss://api-cx.staging.coins.technology/ws-api/" end
 
   def initialize(url)
+    @on_get_products = []
+    @on_get_instruments = []
     connect_to_api(url)
+  end
+
+  def on(event, &proc)
+    case event
+    when :get_products
+      @on_get_products.push(proc)
+    when :get_instruments
+      @on_get_instruments.push(proc)
+    end
   end
 
   def get_products(sequence_number = 0)
@@ -176,6 +188,17 @@ class CX
     @ws.on :message do |event|
       p "Websocket Message: #{event.data}"
       frame = Frame.deserialize(event.data)
+      case frame.message_type
+      when MessageType.reply
+        case frame.function_name
+        when "GetProducts"
+          @on_get_products.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "GetInstruments"
+          @on_get_instruments.each { |proc| proc.call() }
+        end
+      when MessageType.event
+      when MessageType.error
+      end
     end
 
     @ws.on :close do |event|
