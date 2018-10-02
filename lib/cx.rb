@@ -8,13 +8,42 @@ require_relative "cx/instrument.rb"
 require_relative "cx/product.rb"
 
 class CX
-  attr_reader :is_connected, :is_authenticated
+  attr_reader :is_connected, :is_authenticated, :session_token, :user_id, :products, :instruments, :accounts
   def self.production; "wss://api-cx.coins.asia/ws-api/" end
   def self.staging; "wss://api-cx.staging.coins.technology/ws-api/" end
 
   def initialize(url)
     @on_get_products = []
     @on_get_instruments = []
+    @on_web_authenticate_user = []
+    @on_get_user_accounts = []
+    @on_get_account_transactions = []
+    @on_get_account_positions = []
+    @on_get_account_trades = []
+    @on_send_order = []
+    @on_cancel_order = []
+    @on_get_order_status = []
+    @on_get_order_fee = []
+    @on_get_order_history = []
+    @on_get_open_orders = []
+    @on_create_withdraw_ticket = []
+    @on_subscribe_level_1 = []
+    @on_unsubscribe_level_1 = []
+    @on_subscribe_level_2 = []
+    @on_unsubscribe_level 2 = []
+    @on_subscribe_trades = []
+    @on_unsubscribe_trades = []
+    @on_subscribe_account_events = []
+    @level_1_update_event = []
+    @level_2_update_event = []
+    @trade_data_udpate_event = []
+    @pending_deposit_update = []
+    @account_position_event = []
+    @order_state_event = []
+    @order_trade_event = []
+    @new_order_reject_event = []
+    @cancel_order_reject_event = []
+    @market_state_update = []
     connect_to_api(url)
   end
 
@@ -24,6 +53,64 @@ class CX
       @on_get_products.push(proc)
     when :get_instruments
       @on_get_instruments.push(proc)
+    when :web_authenticate_user
+      @on_web_authenticate_user.push(proc)
+    when :get_user_accounts
+      @on_get_user_accounts.push(proc)
+    when :get_account_transactions
+      @on_get_account_transactions.push(proc)
+    when :get_account_positions
+      @on_get_account_positions.push(proc)
+    when :get_account_trades
+      @on_get_account_trades.push(proc)
+    when :send_order
+      @on_send_order.push(proc)
+    when :cancel_order
+      @on_cancel_order.push(proc)
+    when :get_order_status
+      @on_get_order_status.push(proc)
+    when :get_order_fee
+      @on_get_order_fee.push(proc)
+    when :get_order_history
+      @on_get_order_history.push(proc)
+    when :get_open_orders
+      @on_get_open_orders.push(proc)
+    when :create_withdraw_ticket
+      @on_create_withdraw_ticket.push(proc)
+    when :subscribe_level_1
+      @on_subscribe_level_1.push(proc)
+    when :unsubscribe_level_1
+      @on_unsubscribe_level_1.push(proc)
+    when :subscribe_level_2
+      @on_subscribe_level_2.push(proc)
+    when :unsbuscribe_level_2
+      @on_unsubscribe_level_2.push(proc)
+    when :subscribe_trades
+      @on_subscribe_trades.push(proc)
+    when :unsubscribe_trades
+      @on_unsubscribe_trades.push(proc)
+    when :subscribe_account_events
+      @on_subscribe_account_events.push(proc)
+    when :level_1_update_event
+      @level_1_update_event.push(proc)
+    when :level_2_update_event
+      @level_2_update_event.push(proc)
+    when :trade_data_update_event
+      @trade_data_update_event.push(proc)
+    when :pending_deposit_update
+      @pending_deposit_update.push(proc)
+    when :account_position_event
+      @account_position_event.push(proc)
+    when :order_state_event
+      @order_state_event.push(proc)
+    when :order_state_event
+      @order_trade_event.push(proc)
+    when :new_order_reject_event
+      @new_order_reject_event.push(proc)
+    when :cancel_order_reject_event
+      @cancel_order_reject_event.push(proc)
+    when :market_state_update
+      @market_state_update.push(proc)
     end
   end
 
@@ -194,9 +281,69 @@ class CX
         when "GetProducts"
           @on_get_products.each { |proc| proc.call(frame.sequence_number, frame.payload) }
         when "GetInstruments"
-          @on_get_instruments.each { |proc| proc.call() }
+          @on_get_instruments.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "WebAuthenticateUser"
+          @on_web_authenticate_user.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "GetUserAccounts"
+          @on_get_user_accounts.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "GetAccountTransactions"
+          @on_get_account_transactions.each { |proc| proc.call(frame.sequence_number, frame.payload) }  
+        when "GetAccountPositions"
+          @on_get_account_positions.each { |proc| proc.call(frame.sequence_number, frame.payload) }  
+        when "GetAccountTrades"
+          @on_get_account_trades.each { |proc| proc.call(frame.sequence_number, frame.payload) }  
+        when "SendOrder"
+          @on_get_send_order.each { |proc| proc.call(frame.sequence_number, frame.payload) } 
+        when "CancelOrder"
+          @on_cancel_order.each { |proc| proc.call(frame.sequence_number, frame.payload) } 
+        when "GetOrderStatus"
+          @on_get_order_status.each { |proc| proc.call(frame.sequence_number, frame.payload) } 
+        when "GetOrderFee"
+          @on_get_order_fee.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "GetOrderHistory"
+          @on_get_order_history.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "GetOpenOrders"
+          @on_get_order_history.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "CreateWithdrawTicket"
+          @on_create_withdraw_ticket.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "SubscribeLevel1"
+          @on_subscribe_level_1.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "UnsubscribeLevel1"
+          @on_ubsubscribe_level_1.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "SubscribeLevel2"
+          @on_subscribe_level_2.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "UnsbuscribeLevel2"
+          @on_unsubscribe_level_2.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "SubscribeTrades"
+          @on_subscribe_trades.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "UnsubscribeTrades"
+          @on_unsubscribe_trades.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "SubscribeAccountEvents"
+          @on_subscribe_account_events.each { |proc| proc.call(frame.sequence_number, frame.payload) }
         end
       when MessageType.event
+        case frame.function_name
+        when "Level1UpdateEvent"
+          @level_1_update_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "Level2UpdateEvent"
+          @level_2_update_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "TradeDataUpdateEvent"
+          @trade_data_update_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "PendingDepositUpdate"
+          @pending_deposit_update.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "AccountPositionEvent"
+          @account_position_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "OrderStateEvent"
+          @order_state_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "OrderTradeEvent"
+          @order_trade_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "NewOrderRejectEvent"
+          @new_order_reject_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "CancelOrderRejectEvent"
+          @cancel_order_reject_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        when "MarketStateUpdate"
+          @market_state_update.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+        end
       when MessageType.error
       end
     end
