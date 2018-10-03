@@ -30,7 +30,7 @@ class CX
     @on_subscribe_level_1 = []
     @on_unsubscribe_level_1 = []
     @on_subscribe_level_2 = []
-    @on_unsubscribe_level 2 = []
+    @on_unsubscribe_level_2 = []
     @on_subscribe_trades = []
     @on_unsubscribe_trades = []
     @on_subscribe_account_events = []
