@@ -55,6 +55,16 @@ class CX
         end
     end
     
+    Hash.class_eval do
+      def transform_keys
+        result = {}
+        each_key do |key|
+            result[yield(key)] = self[key]
+        end
+        result
+      end
+    end
+    
     connect_to_api(url)
   end
 
