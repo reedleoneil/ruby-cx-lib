@@ -280,76 +280,148 @@ class CX
       when MessageType.reply
         case frame.function_name
         when "GetProducts"
-		  products = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
+          products = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
           event_args = { "sequence_number" => frame.sequence_number, "products" => products }
-		  event_args = event_args.to_ostruct.freeze
+          event_args = event_args.to_ostruct.freeze
           @on_get_products.each { |proc| proc.call(event_args) }
         when "GetInstruments"
-		  instruments = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
+          instruments = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
           event_args = { "sequence_number" => frame.sequence_number, "instruments" => instruments }
-		  event_args = event_args.to_ostruct.freeze
+          event_args = event_args.to_ostruct.freeze
           @on_get_instruments.each { |proc| proc.call(event_args) }
         when "WebAuthenticateUser"
-          @on_web_authenticate_user.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          event_args = { "sequence_number" => frame.sequence_number }.merge(frame.payload.deep_transform_keys! { |key| key.underscore })
+          event_args = event_args.to_ostruct.freeze
+          @on_web_authenticate_user.each { |proc| proc.call(event_args) }
         when "GetUserAccounts"
-          @on_get_user_accounts.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          event_args = { "sequence_number" => frame.sequence_number, "account_ids" => frame.payload }.to_ostruct.freeze
+          @on_get_user_accounts.each { |proc| proc.call(event_args) }
         when "GetAccountTransactions"
-          @on_get_account_transactions.each { |proc| proc.call(frame.sequence_number, frame.payload) }  
+          transactions = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
+          event_args = { "sequence_number" => frame.sequence_number, "transactions" => transactions }
+          event_args = event_args.to_ostruct.freeze
+          @on_get_account_transactions.each { |proc| proc.call(event_args) }  
         when "GetAccountPositions"
-          @on_get_account_positions.each { |proc| proc.call(frame.sequence_number, frame.payload) }  
+          positions = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
+          event_args = { "sequence_number" => frame.sequence_number, "positions" => positions }
+          event_args = event_args.to_ostruct.freeze
+          @on_get_account_positions.each { |proc| proc.call(event_args) }  
         when "GetAccountTrades"
-          @on_get_account_trades.each { |proc| proc.call(frame.sequence_number, frame.payload) }  
+          trades = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
+          event_args = { "sequence_number" => frame.sequence_number, "trades" => trades }
+          event_args = event_args.to_ostruct.freeze
+          @on_get_account_trades.each { |proc| proc.call(event_args) }  
         when "SendOrder"
-          @on_get_send_order.each { |proc| proc.call(frame.sequence_number, frame.payload) } 
+          event_args = { "sequence_number" => frame.sequence_number }.merge(frame.payload.deep_transform_keys! { |key| key.underscore })
+          event_args = event_args.to_ostruct.freeze
+          @on_get_send_order.each { |proc| proc.call(event_args) } 
         when "CancelOrder"
-          @on_cancel_order.each { |proc| proc.call(frame.sequence_number, frame.payload) } 
+          event_args = { "sequence_number" => frame.sequence_number }.merge(frame.payload.deep_transform_keys! { |key| key.underscore })
+          event_args = event_args.to_ostruct.freeze
+          @on_cancel_order.each { |proc| proc.call(event_args) } 
         when "GetOrderStatus"
-          @on_get_order_status.each { |proc| proc.call(frame.sequence_number, frame.payload) } 
+          order_status = frame.payload.deep_transform_keys! { |key| key.underscore }
+          event_args = { "sequence_number" => frame.sequence_number, "order_status" => order_status }
+          event_args = event_args.to_ostruct.freeze
+          @on_get_order_status.each { |proc| proc.call(event_args) } 
         when "GetOrderFee"
-          @on_get_order_fee.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          event_args = { "sequence_number" => frame.sequence_number }.merge(frame.payload.deep_transform_keys! { |key| key.underscore })
+          event_args = event_args.to_ostruct.freeze
+          @on_get_order_fee.each { |proc| proc.call(event_args) }
         when "GetOrderHistory"
-          @on_get_order_history.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          orders = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
+          event_args = { "sequence_number" => frame.sequence_number, "orders" => orders }
+          event_args = event_args.to_ostruct.freeze
+          @on_get_order_history.each { |proc| proc.call(event_args) }
         when "GetOpenOrders"
+          orders = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
+          event_args = { "sequence_number" => frame.sequence_number, "orders" => orders }
+          event_args = event_args.to_ostruct.freeze
           @on_get_order_history.each { |proc| proc.call(frame.sequence_number, frame.payload) }
         when "CreateWithdrawTicket"
-          @on_create_withdraw_ticket.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          event_args = { "sequence_number" => frame.sequence_number }.merge(frame.payload.deep_transform_keys! { |key| key.underscore })
+          event_args = event_args.to_ostruct.freeze
+          @on_create_withdraw_ticket.each { |proc| proc.call(event_args) }
         when "SubscribeLevel1"
-          @on_subscribe_level_1.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          market_data_level1 = frame.payload.deep_transform_keys! { |key| key.underscore }
+          event_args = { "sequence_number" => frame.sequence_number, "market_data_level1" => market_data_level1 }
+          event_args = event_args.to_ostruct.freeze
+          @on_subscribe_level_1.each { |proc| proc.call(event_args) }
         when "UnsubscribeLevel1"
-          @on_ubsubscribe_level_1.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          event_args = { "sequence_number" => frame.sequence_number }.merge(frame.payload.deep_transform_keys! { |key| key.underscore })
+          event_args = event_args.to_ostruct.freeze
+          @on_ubsubscribe_level_1.each { |proc| proc.call(event_args) }
         when "SubscribeLevel2"
-          @on_subscribe_level_2.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          market_data_level2 = frame.payload.deep_transform_keys! { |key| key.underscore }
+          event_args = { "sequence_number" => frame.sequence_number, "market_data_level2" => market_data_level2 }
+          event_args = event_args.to_ostruct.freeze
+          @on_subscribe_level_2.each { |proc| proc.call(event_args) }
         when "UnsbuscribeLevel2"
-          @on_unsubscribe_level_2.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          event_args = { "sequence_number" => frame.sequence_number }.merge(frame.payload.deep_transform_keys! { |key| key.underscore })
+          event_args = event_args.to_ostruct.freeze
+          @on_unsubscribe_level_2.each { |proc| proc.call(event_args) }
         when "SubscribeTrades"
-          @on_subscribe_trades.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          market_trades = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
+          event_args = { "sequence_number" => frame.sequence_number, "market_trades" => market_trades }
+          event_args = event_args.to_ostruct.freeze
+          @on_subscribe_trades.each { |proc| proc.call(event_args) }
         when "UnsubscribeTrades"
-          @on_unsubscribe_trades.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          event_args = { "sequence_number" => frame.sequence_number }.merge(frame.payload.deep_transform_keys! { |key| key.underscore })
+          event_args = event_args.to_ostruct.freeze
+          @on_unsubscribe_trades.each { |proc| proc.call(event_args) }
         when "SubscribeAccountEvents"
-          @on_subscribe_account_events.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          event_args = { "sequence_number" => frame.sequence_number }.merge(frame.payload.deep_transform_keys! { |key| key.underscore })
+          event_args = event_args.to_ostruct.freeze
+          @on_subscribe_account_events.each { |proc| proc.call(event_args) }
         end
       when MessageType.event
         case frame.function_name
         when "Level1UpdateEvent"
-          @level_1_update_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          market_data_level1 = frame.payload.deep_transform_keys! { |key| key.underscore }
+          event_args = { "sequence_number" => frame.sequence_number, "market_data_level1" => market_data_level1 }
+          event_args = event_args.to_ostruct.freeze
+          @level_1_update_event.each { |proc| proc.call(event_args) }
         when "Level2UpdateEvent"
-          @level_2_update_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          market_data_level2 = frame.payload.deep_transform_keys! { |key| key.underscore }
+          event_args = { "sequence_number" => frame.sequence_number, "market_data_level2" => market_data_level2 }
+          event_args = event_args.to_ostruct.freeze
+          @level_2_update_event.each { |proc| proc.call(event_args) }
         when "TradeDataUpdateEvent"
-          @trade_data_update_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          market_trades = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
+          event_args = { "sequence_number" => frame.sequence_number, "market_trades" => market_trades }
+          event_args = event_args.to_ostruct.freeze
+          @trade_data_update_event.each { |proc| proc.call(event_args) }
         when "PendingDepositUpdate"
-          @pending_deposit_update.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          event_args = { "sequence_number" => frame.sequence_number }.merge(frame.payload.deep_transform_keys! { |key| key.underscore })
+          event_args = event_args.to_ostruct.freeze
+          @pending_deposit_update.each { |proc| proc.call(event_args) }
         when "AccountPositionEvent"
-          @account_position_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          positions = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
+          event_args = { "sequence_number" => frame.sequence_number, "positions" => positions }
+          event_args = event_args.to_ostruct.freeze
+          @account_position_event.each { |proc| proc.call(event_args) }
         when "OrderStateEvent"
+          order_status = frame.payload.deep_transform_keys! { |key| key.underscore }
+          event_args = { "sequence_number" => frame.sequence_number, "order_status" => order_status }
+          event_args = event_args.to_ostruct.freeze
           @order_state_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
         when "OrderTradeEvent"
-          @order_trade_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          trade = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
+          event_args = { "sequence_number" => frame.sequence_number, "trade" => trade }
+          event_args = event_args.to_ostruct.freeze
+          @order_trade_event.each { |proc| proc.call(event_args) }
         when "NewOrderRejectEvent"
-          @new_order_reject_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          event_args = { "sequence_number" => frame.sequence_number }.merge(frame.payload.deep_transform_keys! { |key| key.underscore })
+          event_args = event_args.to_ostruct.freeze
+          @new_order_reject_event.each { |proc| proc.call(event_args) }
         when "CancelOrderRejectEvent"
-          @cancel_order_reject_event.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          event_args = { "sequence_number" => frame.sequence_number }.merge(frame.payload.deep_transform_keys! { |key| key.underscore })
+          event_args = event_args.to_ostruct.freeze
+          @cancel_order_reject_event.each { |proc| proc.call(event_args) }
         when "MarketStateUpdate"
-          @market_state_update.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+          event_args = { "sequence_number" => frame.sequence_number }.merge(frame.payload.deep_transform_keys! { |key| key.underscore })
+          event_args = event_args.to_ostruct.freeze
+          @market_state_update.each { |proc| proc.call(event_args) }
         end
       when MessageType.error
       end
@@ -366,6 +438,8 @@ class CX
     end
   end
 end
+
+# Monkey Patches
 
 String.class_eval do
   def underscore
