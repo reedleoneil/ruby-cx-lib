@@ -45,26 +45,6 @@ class CX
     @cancel_order_reject_event = []
     @market_state_update = []
     
-    String.class_eval do
-      def underscore
-        self.gsub(/::/, '/').
-            gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
-            gsub(/([a-z\d])([A-Z])/,'\1_\2').
-            tr("-", "_").
-            downcase
-        end
-    end
-    
-    Hash.class_eval do
-      def transform_keys
-        result = {}
-        each_key do |key|
-            result[yield(key)] = self[key]
-        end
-        result
-      end
-    end
-    
     connect_to_api(url)
   end
 
@@ -300,7 +280,10 @@ class CX
       when MessageType.reply
         case frame.function_name
         when "GetProducts"
-          @on_get_products.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+		  products = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
+          event_args = { "sequence_number" => frame.sequence_number, "products" => products }
+		  event_args = OpenStruct.new(event_args).freeze
+          @on_get_products.each { |proc| proc.call(event_args) }
         when "GetInstruments"
           @on_get_instruments.each { |proc| proc.call(frame.sequence_number, frame.payload) }
         when "WebAuthenticateUser"
@@ -378,5 +361,25 @@ class CX
     @ws.on :error do |event|
       p "Websocket Error: #{event.exception} #{event.message}"
     end
+  end
+end
+
+String.class_eval do
+  def underscore
+    self.gsub(/::/, '/').
+      gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+      gsub(/([a-z\d])([A-Z])/,'\1_\2').
+      tr("-", "_").
+      downcase
+  end
+end
+    
+Hash.class_eval do
+  def deep_transform_keys!(&block)
+    keys.each do |key|
+      value = delete(key)
+      self[yield(key)] = value.is_a?(Hash) ? value.deep_transform_keys!(&block) : value
+    end
+    self
   end
 end
