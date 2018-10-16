@@ -282,10 +282,13 @@ class CX
         when "GetProducts"
 		  products = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
           event_args = { "sequence_number" => frame.sequence_number, "products" => products }
-		  event_args = OpenStruct.new(event_args).freeze
+		  event_args = event_args.to_ostruct.freeze
           @on_get_products.each { |proc| proc.call(event_args) }
         when "GetInstruments"
-          @on_get_instruments.each { |proc| proc.call(frame.sequence_number, frame.payload) }
+		  instruments = frame.payload.each { |hash| hash.deep_transform_keys! { |key| key.underscore } }
+          event_args = { "sequence_number" => frame.sequence_number, "instruments" => instruments }
+		  event_args = event_args.to_ostruct.freeze
+          @on_get_instruments.each { |proc| proc.call(event_args) }
         when "WebAuthenticateUser"
           @on_web_authenticate_user.each { |proc| proc.call(frame.sequence_number, frame.payload) }
         when "GetUserAccounts"
@@ -381,5 +384,9 @@ Hash.class_eval do
       self[yield(key)] = value.is_a?(Hash) ? value.deep_transform_keys!(&block) : value
     end
     self
+  end
+
+  def to_ostruct
+    JSON.parse to_json, object_class: OpenStruct
   end
 end
