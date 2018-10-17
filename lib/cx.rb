@@ -156,7 +156,7 @@ class CX
     @ws.send(Frame.serialize(frame))
   end
 
-  def send_order(account_id, client_order_id, quantity, display_quantity, user_display_quantity, limit_price, order_id_oco, order_type, peg_price_type, instrument_id, trailing_amount, limit_offest, side, stop_price, time_in_force, sequence_number = 0)
+  def send_order(account_id, client_order_id, quantity, display_quantity, use_display_quantity, limit_price, order_id_oco, order_type, peg_price_type, instrument_id, trailing_amount, limit_offest, side, stop_price, time_in_force, sequence_number = 0)
     payload = {
       "OMSId" => 1,
       "AccountId" => account_id,
