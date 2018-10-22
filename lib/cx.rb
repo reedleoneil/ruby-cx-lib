@@ -344,7 +344,7 @@ class CX
           @on_create_withdraw_ticket.each { |proc| proc.call(event_args) }
         when "SubscribeLevel1"
           market_data_level1 = frame.payload.deep_transform_keys! { |key| key.underscore }
-          event_args = { "sequence_number" => frame.sequence_number, "market_data_level1" => market_data_level1 }
+          event_args = { "sequence_number" => frame.sequence_number, "market_data" => market_data_level1 }
           event_args = event_args.to_ostruct.freeze
           @on_subscribe_level_1.each { |proc| proc.call(event_args) }
         when "UnsubscribeLevel1"
@@ -353,7 +353,7 @@ class CX
           @on_ubsubscribe_level_1.each { |proc| proc.call(event_args) }
         when "SubscribeLevel2"
           market_data_level2 = frame.payload.deep_transform_keys! { |key| key.underscore }
-          event_args = { "sequence_number" => frame.sequence_number, "market_data_level2" => market_data_level2 }
+          event_args = { "sequence_number" => frame.sequence_number, "market_data" => market_data_level2 }
           event_args = event_args.to_ostruct.freeze
           @on_subscribe_level_2.each { |proc| proc.call(event_args) }
         when "UnsbuscribeLevel2"
@@ -378,12 +378,12 @@ class CX
         case frame.function_name
         when "Level1UpdateEvent"
           market_data_level1 = frame.payload.deep_transform_keys! { |key| key.underscore }
-          event_args = { "sequence_number" => frame.sequence_number, "market_data_level1" => market_data_level1 }
+          event_args = { "sequence_number" => frame.sequence_number, "market_data" => market_data_level1 }
           event_args = event_args.to_ostruct.freeze
           @level_1_update_event.each { |proc| proc.call(event_args) }
         when "Level2UpdateEvent"
           market_data_level2 = frame.payload.deep_transform_keys! { |key| key.underscore }
-          event_args = { "sequence_number" => frame.sequence_number, "market_data_level2" => market_data_level2 }
+          event_args = { "sequence_number" => frame.sequence_number, "market_data" => market_data_level2 }
           event_args = event_args.to_ostruct.freeze
           @level_2_update_event.each { |proc| proc.call(event_args) }
         when "TradeDataUpdateEvent"
