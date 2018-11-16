@@ -127,3 +127,7 @@ EM.run do
   cx.get_products
 end
 ```
+## License
+Copyright (C) 2018 reedleoneil
+
+ruby-cx-lib is licensed under GNU General Public License version 3.
