@@ -2,9 +2,10 @@
 Ruby CoinsPro API Library
 
 ## Getting Started
-You may download the Coins Pro API documentation [here](https://s3-ap-northeast-1.amazonaws.com/coins-staging-static-uploads/uploads/files/Coins+Pro+API.pdf). Access to the API is available only for customers who have a Coins Pro account.  
+Do more with your trades. Download the API documentation [here](https://exchange.coins.asia/assets/docs/Coins-Pro-API.pdf).
 
-For the authentication credentials, please email coinspro.support@coins.ph using the email you're using for Coins Pro together with your **PGP Public Key**. This way, they can provide the API credentials in a secure manner.
+You can create API keys directly from your Coins Pro account. Just click the API KEYS option on the side menu.
+[https://pro.coins.asia/](https://pro.coins.asia/)
 
 ## Usage
 Require library.
