@@ -1,3 +1,6 @@
+# NOTICE: This repository is depricated and not maintained.
+There have been updates to the API specifications which are not implemented in this project.
+
 # ruby-cx-lib
 Ruby CoinsPro API Library
 
